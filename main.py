@@ -26,6 +26,5 @@ for _ in range(1,10):
     print (mapa)
     trivial_vacuum_env.step()
     
-trivial_vacuum_env.run()
 print(random_agent.performance)
     
