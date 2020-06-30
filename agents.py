@@ -800,7 +800,77 @@ class TrivialVacuumEnvironment(Environment):
         """Agents start in either location at random."""
         return random.choice([loc_A, loc_B])
 
+class TrivialVacuumEnvironment2D(Environment):
 
+    def __init__(self, sizeDimension1, sizeDimension2):
+        super().__init__()
+        
+        self.map = []
+        self.maxX = sizeDimension1 - 1
+        self.maxY = sizeDimension2 - 1
+        
+        for i in range(0, sizeDimension1):
+            self.map.append([])
+            for j in range(0, sizeDimension2):
+                self.map[i].append(random.randint(0,3)*5)
+                
+    def getPlaceValue(self, location):
+        x, y = location
+        return self.map[x][y]
+
+    def thing_classes(self):
+        return [Wall, Dirt, ReflexVacuumAgent, RandomVacuumAgent, TableDrivenVacuumAgent, ModelBasedVacuumAgent]
+
+    def percept(self, agent):
+        """Returns the agent's location, and the location status (Dusty/Dirty/Clean)."""
+        return agent.location, self.getPlaceValue(agent.location)
+
+    def isValidLocation (self, x, y):
+        return x >= 0 and y >=0 and x <= self.maxX and y <= self.maxY
+    
+    def execute_action(self, agent, action):
+        """Change agent's location and/or location's status; track performance.
+        Score 10 for each dirt cleaned; -1 for each move."""
+        x, y = agent.location
+        #cleaning area
+        if action == 'Suck':
+            if self.map[x][y] == 5:
+                agent.performance += 10
+            elif self.map[x][y] == 10:
+                agent.performance += 5
+            self.map[x][y] -= 5 if self.map[x][y] else 0
+        elif action == 'Full clean':
+            if self.map[x][y] == 5:
+                agent.performance += 10
+            elif self.map[x][y] == 10:
+                agent.performance += 5
+            self.map[x][y] = 0 
+
+        #moving
+        if action in ["Right", "Left", "Up", "Down"]:
+            if action == 'Right':
+                if self.isValidLocation(x, (y+1)):
+                    agent.location = (x, y+1)    
+            if action == 'Left':
+                if self.isValidLocation(x, (y-1)):
+                    agent.location = (x, (y-1))    
+            if action == 'Down':
+                if self.isValidLocation((x+1), y):
+                    agent.location = (x+1, y)
+            if action == 'Down':
+                if self.isValidLocation((x-1), y):
+                    agent.location = ((x-1), y)
+            agent.performance -= 1
+            
+    def default_location(self, thing):
+        """Agents start in either location at random."""
+        return (random.randint(0, self.maxX), random.randint(0, self.maxY))
+
+
+class TrivialVacuumEnvironment4Places(TrivialVacuumEnvironment2D):
+    def __init__(self):
+        super().__init__(2, 2)
+        
 # ______________________________________________________________________________
 # The Wumpus World
 
