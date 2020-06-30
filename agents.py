@@ -205,6 +205,9 @@ def RandomVacuumAgent():
     """
     return Agent(RandomAgentProgram(['Right', 'Left', 'Suck', 'NoOp']))
 
+def RandomVacuumAgent4places ():
+    return RandomAgentProgram(['Right', 'Left', 'Up', 'Down', 'Suck', 'Full clean'])
+
 
 def TableDrivenVacuumAgent():
     """Tabular approach towards vacuum world as mentioned in [Figure 2.3]

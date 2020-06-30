@@ -9,9 +9,14 @@ from agents import *
 #init
 trivial_vacuum_env = TrivialVacuumEnvironment4Places()
 
-#create agent
-random_agent = Agent(program=RandomAgentProgram(['Right', 'Left', 'Up', 'Down', 'Suck', 'Full clean']))
 
+
+
+#create agent
+random_agent = Agent(program=RandomVacuumAgent4places())
+
+
+ 
 #add agent on Environment
 trivial_vacuum_env.add_thing(random_agent)
 
